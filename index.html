@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101d20">
+  <meta name="description" content="Stop the zombie invasion with perfectly placed footballs.">
+  <title>Zombie Football Invaders</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <div class="brand"><span class="brand-mark">⚽</span><div><span class="eyebrow">ARCADE FOOTBALL</span><h1>ZOMBIE <em>INVADERS</em></h1></div></div>
+      <button id="soundButton" class="sound-button" type="button" aria-label="Turn sound on">♪ <span>OFF</span></button>
+    </header>
+    <section class="game-card" aria-label="Zombie Football Invaders game">
+      <div class="scoreboard" aria-live="polite"><div><span>SCORE</span><strong id="score">0000</strong></div><div><span>WAVE</span><strong id="wave">01</strong></div><div><span>BEST</span><strong id="best">0000</strong></div><div><span>LIVES</span><strong id="lives">♥ ♥ ♥</strong></div></div>
+      <div class="arena-wrap">
+        <canvas id="game" width="900" height="600" aria-label="Football pitch with advancing zombies"></canvas>
+        <div id="overlay" class="overlay"><div class="overlay-panel"><span class="badge">THE FINAL WHISTLE CAN WAIT</span><h2 id="overlayTitle">THE DEAD ARE<br><em>ON THE PITCH.</em></h2><p id="overlayText">Hold the line. Fire footballs at the zombies before they reach your goal.</p><button id="startButton" class="primary-button" type="button">KICK OFF <span>→</span></button><div class="mini-help">MOVE ← → OR A / D <b>·</b> SHOOT SPACE OR CLICK</div></div></div>
+      </div>
+      <div class="mobile-controls"><button id="leftButton" type="button" aria-label="Move left">◀</button><button id="shootButton" type="button" aria-label="Shoot">SHOOT ⚽</button><button id="rightButton" type="button" aria-label="Move right">▶</button></div>
+      <div class="footer-bar"><span><i class="status-dot"></i> DEFEND YOUR GOAL</span><span>ARROWS / A D TO MOVE <b>·</b> SPACE / CLICK TO SHOOT <b>·</b> P TO PAUSE</span></div>
+    </section>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
+
