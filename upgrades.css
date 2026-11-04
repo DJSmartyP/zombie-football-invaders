@@ -3,6 +3,10 @@
 .scoreboard #cash,.scoreboard #coins{color:#dafa6a}
 .overlay{overflow-y:auto;align-items:center}
 .overlay-panel{width:min(100%,720px);padding:12px 0}
+.overlay[data-mode="menu"] .overlay-panel,.overlay[data-mode="over"] .overlay-panel{display:flex;flex-direction:column;align-items:center}
+.overlay[data-mode="menu"] #startButton,.overlay[data-mode="over"] #startButton{order:1;position:sticky;top:8px;z-index:2;margin:2px 0 8px}
+.overlay[data-mode="menu"] #overlayContent,.overlay[data-mode="over"] #overlayContent{order:2;width:100%}
+.overlay[data-mode="menu"] #overlayHelp,.overlay[data-mode="over"] #overlayHelp{order:3}
 .overlay h2{font-size:clamp(39px,5.2vw,63px);margin:10px 0 8px}
 .overlay p{max-width:600px;margin-bottom:12px}
 .overlay[data-mode="menu"] .overlay-panel,.overlay[data-mode="over"] .overlay-panel{max-width:720px}
