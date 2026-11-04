@@ -3,10 +3,10 @@
 .scoreboard #cash,.scoreboard #coins{color:#dafa6a}
 .overlay{overflow-y:auto;align-items:center}
 .overlay-panel{width:min(100%,720px);padding:12px 0}
-.overlay[data-mode="menu"] .overlay-panel,.overlay[data-mode="over"] .overlay-panel{display:flex;flex-direction:column;align-items:center}
-.overlay[data-mode="menu"] #startButton,.overlay[data-mode="over"] #startButton{order:1;position:sticky;top:8px;z-index:2;margin:2px 0 8px}
-.overlay[data-mode="menu"] #overlayContent,.overlay[data-mode="over"] #overlayContent{order:2;width:100%}
-.overlay[data-mode="menu"] #overlayHelp,.overlay[data-mode="over"] #overlayHelp{order:3}
+.overlay[data-mode="menu"] .overlay-panel,.overlay[data-mode="over"] .overlay-panel,.overlay[data-mode="shop"] .overlay-panel{display:flex;flex-direction:column;align-items:center}
+.overlay[data-mode="menu"] #startButton,.overlay[data-mode="over"] #startButton,.overlay[data-mode="shop"] #startButton{order:1;position:sticky;top:8px;z-index:2;margin:2px 0 8px}
+.overlay[data-mode="menu"] #overlayContent,.overlay[data-mode="over"] #overlayContent,.overlay[data-mode="shop"] #overlayContent{order:2;width:100%}
+.overlay[data-mode="menu"] #overlayHelp,.overlay[data-mode="over"] #overlayHelp,.overlay[data-mode="shop"] #overlayHelp{order:3}
 .overlay h2{font-size:clamp(39px,5.2vw,63px);margin:10px 0 8px}
 .overlay p{max-width:600px;margin-bottom:12px}
 .overlay[data-mode="menu"] .overlay-panel,.overlay[data-mode="over"] .overlay-panel{max-width:720px}
@@ -18,12 +18,24 @@
 .character-card small,.upgrade-card small{font-size:11px;line-height:1.25;color:#c5ddc8;flex:1}
 .character-card button,.upgrade-card button{width:100%;border:0;border-radius:6px;background:#dafa6a;color:#1c3327;font:800 12px 'DM Sans',Arial,sans-serif;padding:7px 5px;cursor:pointer}
 .character-card button:disabled,.upgrade-card button:disabled{background:#435e4a;color:#c2d1c2;cursor:default}
-.card-emoji{font-size:24px;line-height:1}
-.shop-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:8px 0 16px}
-.upgrade-card{min-height:145px}
-.upgrade-card strong{font-size:25px}
-.upgrade-icon{font-size:26px}
+.player-avatar{display:block;width:67px;height:67px;align-self:center;filter:drop-shadow(0 3px 2px #071b14)}
+.ball-name{color:#dafa6a;font-size:10px;font-weight:800;letter-spacing:.03em}
+.shop-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:8px 0 12px}
+.upgrade-card{min-height:118px}
+.upgrade-card strong{font-size:20px}
+.upgrade-icon{font-size:21px}
 .bank-note{font-size:12px;color:#dafa6a;margin:6px 0 10px}
 .shop-stats{display:flex;justify-content:center;gap:14px;color:#d2e8d1;font-size:12px;font-weight:700;margin-bottom:8px}
+.consumable-bar{display:flex;gap:8px;align-items:center;justify-content:center;padding:9px 5px 1px;flex-wrap:wrap}
+.consumable-bar button,.shield-indicator{border:1px solid #78aa8e;border-radius:8px;background:#254a3a;color:#e9f9e9;padding:8px 11px;font:800 11px 'DM Sans',Arial,sans-serif;letter-spacing:.04em}
+.consumable-bar button{cursor:pointer}.consumable-bar button:disabled{opacity:.45;cursor:default}
+.consumable-bar strong{display:inline-grid;place-items:center;min-width:22px;margin-left:5px;border-radius:5px;background:#dafa6a;color:#1c3327}
+.overlay[data-mode="over"]{background:radial-gradient(circle at 50% 42%,#6d111ce8,#29080ded 75%);animation:loss-flash .5s ease-out}
+.overlay[data-mode="over"] .overlay-panel{background:#2b1014ed;border:2px solid #e84747;border-radius:15px;padding:16px;box-shadow:0 0 0 6px #4c0f17aa,0 0 60px #e2214f99}
+.overlay[data-mode="over"] h2,.overlay[data-mode="over"] em{color:#ff5555;text-shadow:2px 3px 0 #4d080d,0 0 22px #f42d3f}
+.overlay[data-mode="over"] .badge{color:#fff3ef;background:#a21f2d;border-color:#ff6868}
+.overlay[data-mode="over"] .primary-button{background:#ff6464;color:#300b10;box-shadow:0 5px 0 #962a32}
+.overlay[data-mode="over"] .primary-button:hover{box-shadow:0 3px 0 #962a32}
+@keyframes loss-flash{from{background:#ff5362}to{background:radial-gradient(circle at 50% 42%,#6d111ce8,#29080ded 75%)}}
 .credits{text-align:center;color:#90b49c;font-size:11px;letter-spacing:.04em;padding:2px 0 8px}.credits strong{color:#dafa6a}
-@media(max-width:650px){.scoreboard{grid-template-columns:repeat(3,1fr);row-gap:9px}.scoreboard>div:nth-child(3){border-right:0}.scoreboard strong{font-size:23px}.arena-wrap{min-height:470px}.arena-wrap canvas{height:470px;aspect-ratio:auto}.overlay{align-items:start}.overlay h2{font-size:40px}.card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.character-card{min-height:96px}.shop-grid{grid-template-columns:1fr}.upgrade-card{min-height:82px}.upgrade-card small{flex:0}.mini-help{display:block;font-size:9px;margin-top:12px}}
+@media(max-width:650px){.scoreboard{grid-template-columns:repeat(3,1fr);row-gap:9px}.scoreboard>div:nth-child(3){border-right:0}.scoreboard strong{font-size:23px}.arena-wrap{min-height:470px}.arena-wrap canvas{height:470px;aspect-ratio:auto}.overlay{align-items:start}.overlay h2{font-size:40px}.card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.character-card{min-height:96px}.shop-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.upgrade-card{min-height:95px}.upgrade-card small{flex:0}.mini-help{display:block;font-size:9px;margin-top:12px}.consumable-bar button,.shield-indicator{font-size:9px;padding:7px}}

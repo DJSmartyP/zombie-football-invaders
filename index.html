@@ -7,7 +7,7 @@
   <meta name="description" content="Stop the zombie invasion with perfectly placed footballs.">
   <title>Zombie Football Invaders</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="upgrades.css?v=2">
+  <link rel="stylesheet" href="upgrades.css?v=3">
 </head>
 <body>
   <main class="shell">
@@ -21,11 +21,12 @@
         <canvas id="game" width="900" height="600" aria-label="Football pitch with advancing zombies"></canvas>
         <div id="overlay" class="overlay"><div class="overlay-panel"><span class="badge" id="overlayBadge">THE FINAL WHISTLE CAN WAIT</span><h2 id="overlayTitle">THE DEAD ARE<br><em>ON THE PITCH.</em></h2><p id="overlayText">Hold the line. Fire footballs at the zombies before they reach your goal.</p><div id="overlayContent"></div><button id="startButton" class="primary-button" type="button">KICK OFF <span>→</span></button><div class="mini-help" id="overlayHelp">MOVE ← → OR A / D <b>·</b> SPACE FIRES ONCE</div></div></div>
       </div>
+      <div class="consumable-bar" aria-label="One-use match items"><button id="freezeButton" type="button" disabled>Q · FREEZE WHISTLE <strong id="freezeCount">0</strong></button><button id="powerButton" type="button" disabled>E · CHARGED BALL <strong id="powerCount">0</strong></button><span class="shield-indicator">🛡 GOAL SHIELDS <strong id="shieldCount">0</strong></span></div>
       <div class="mobile-controls"><button id="leftButton" type="button" aria-label="Move left">◀</button><button id="shootButton" type="button" aria-label="Shoot">SHOOT ⚽</button><button id="rightButton" type="button" aria-label="Move right">▶</button></div>
-      <div class="footer-bar"><span><i class="status-dot"></i> DEFEND YOUR GOAL</span><span>ARROWS / A D TO MOVE <b>·</b> SPACE / CLICK TO SHOOT ONCE <b>·</b> P TO PAUSE</span></div>
+      <div class="footer-bar"><span><i class="status-dot"></i> DEFEND YOUR GOAL</span><span>ARROWS / A D TO MOVE <b>·</b> SPACE / CLICK TO SHOOT ONCE <b>·</b> Q FREEZE <b>·</b> E CHARGED BALL <b>·</b> P PAUSE</span></div>
       <div class="credits">Original idea by <strong>Joshua</strong> · Playtesting by <strong>Jaylen</strong></div>
     </section>
   </main>
-  <script src="game.js?v=2"></script>
+  <script src="game.js?v=3"></script>
 </body>
 </html>
