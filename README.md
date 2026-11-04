@@ -10,5 +10,9 @@ Open `index.html` in a browser, or play the [GitHub Pages version](https://djsma
 - Shoot: **Space**, click/tap the pitch, or the touch button.
 - Pause: **P**.
 
-The game has escalating waves, three lives, optional sound, and a best score saved in the browser. It uses plain HTML, CSS, and JavaScript; no build step is required.
+The game has escalating zombie strength, a shop between waves, five characters with permanent coin unlocks, optional sound, and a best score saved in the browser. Hold Space to fire repeatedly only after buying Auto Fire in the shop. It uses plain HTML, CSS, and JavaScript; no build step is required.
 
+## Credits
+
+- Original idea: Joshua
+- Playtesting: Jaylen
