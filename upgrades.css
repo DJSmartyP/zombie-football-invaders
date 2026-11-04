@@ -11,6 +11,9 @@
 .overlay p{max-width:600px;margin-bottom:12px}
 .overlay[data-mode="menu"] .overlay-panel,.overlay[data-mode="over"] .overlay-panel{max-width:720px}
 .section-label{color:#dafa6a;font-weight:800;font-size:11px;letter-spacing:.17em;margin:10px 0 7px}
+.kit-picker{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:8px auto 11px;color:#dafa6a;font-size:10px;font-weight:800;letter-spacing:.08em}
+.kit-picker label{display:flex;align-items:center;gap:5px;color:#cbe5cc}
+.kit-picker select{max-width:145px;border:1px solid #91c781;border-radius:6px;background:#203f33;color:#f4ffe9;padding:6px 8px;font:700 11px 'DM Sans',Arial,sans-serif}
 .card-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:8px 0 14px}
 .character-card,.upgrade-card{background:#18372e;border:1px solid #608769;border-radius:10px;color:#f2f9e7;padding:10px;text-align:left;min-height:112px;display:flex;flex-direction:column;gap:5px}
 .character-card.selected{border-color:#dafa6a;box-shadow:0 0 0 2px #dafa6a50}
@@ -38,4 +41,4 @@
 .overlay[data-mode="over"] .primary-button:hover{box-shadow:0 3px 0 #962a32}
 @keyframes loss-flash{from{background:#ff5362}to{background:radial-gradient(circle at 50% 42%,#6d111ce8,#29080ded 75%)}}
 .credits{text-align:center;color:#90b49c;font-size:11px;letter-spacing:.04em;padding:2px 0 8px}.credits strong{color:#dafa6a}
-@media(max-width:650px){.scoreboard{grid-template-columns:repeat(3,1fr);row-gap:9px}.scoreboard>div:nth-child(3){border-right:0}.scoreboard strong{font-size:23px}.arena-wrap{min-height:470px}.arena-wrap canvas{height:470px;aspect-ratio:auto}.overlay{align-items:start}.overlay h2{font-size:40px}.card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.character-card{min-height:96px}.shop-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.upgrade-card{min-height:95px}.upgrade-card small{flex:0}.mini-help{display:block;font-size:9px;margin-top:12px}.consumable-bar button,.shield-indicator{font-size:9px;padding:7px}}
+@media(max-width:650px){.scoreboard{grid-template-columns:repeat(3,1fr);row-gap:9px}.scoreboard>div:nth-child(3){border-right:0}.scoreboard strong{font-size:23px}.arena-wrap{min-height:470px}.arena-wrap canvas{height:470px;aspect-ratio:auto}.overlay{align-items:start}.overlay h2{font-size:40px}.card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.character-card{min-height:96px}.shop-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.upgrade-card{min-height:95px}.upgrade-card small{flex:0}.mini-help{display:block;font-size:9px;margin-top:12px}.consumable-bar button,.shield-indicator{font-size:9px;padding:7px}.kit-picker{gap:6px}.kit-picker>span{width:100%;text-align:center}}

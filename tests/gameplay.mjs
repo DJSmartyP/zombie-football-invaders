@@ -31,6 +31,12 @@ const key=(code,repeat=false)=>listeners['window:keydown']({code,repeat,preventD
 
 assert.match(element('overlayContent').innerHTML,/class="player-avatar"/);
 assert.match(element('overlayContent').innerHTML,/Shield ball/);
+assert.match(element('overlayContent').innerHTML,/Vertical stripes/);
+listeners['overlayContent:change']({target:{id:'kitColor',value:'red'}});
+listeners['overlayContent:change']({target:{id:'kitPattern',value:'stripes'}});
+assert.equal(storage.get('zfi-kit-color'),'"red"');
+assert.equal(storage.get('zfi-kit-pattern'),'"stripes"');
+assert.match(element('overlayContent').innerHTML,/stroke="#fff5df" stroke-width="7"/);
 game.start();
 key('Space');
 assert.equal(game.get().balls.length,1);

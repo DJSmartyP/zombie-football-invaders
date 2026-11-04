@@ -9,9 +9,13 @@
     {id:'captain',name:'Captain',number:10,ballName:'Star ball',cost:200,ability:'Rally Cry',desc:'2 damage, 4 lives and 20% more match cash.',speed:1,hearts:4,damage:2,cash:1.2,pierce:1,color:'#f6dc68'},
     {id:'legend',name:'Legend',number:7,ballName:'Lightning ball',cost:400,ability:'Golden Ball',desc:'3 damage, 4 lives and balls pierce two zombies.',speed:1.05,hearts:4,damage:3,cash:1,pierce:2,color:'#f08add'}
   ];
+  const kitColors={lime:['Lime','#d9f76b','#173d32'],red:['Red','#e9454e','#fff5df'],blue:['Blue','#3487df','#f6fbff'],sky:['Sky blue','#65cbe5','#173d43'],yellow:['Yellow','#ffd64f','#2f341e'],green:['Green','#25a56c','#f5fff1'],white:['White','#f5f3e8','#243b35'],black:['Black','#27343b','#e9f5ed']};
+  const kitPatterns={plain:'Plain',stripes:'Vertical stripes',hoops:'Hoops',halves:'Half and half'};
   const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}};
   const save=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value))}catch{}};
   let bank=Number(read('zfi-coins',0))||0,owned=read('zfi-owned',['rookie']),selected=read('zfi-character','rookie');
+  let kitColor=read('zfi-kit-color','lime'),kitPattern=read('zfi-kit-pattern','plain');
+  if(!kitColors[kitColor])kitColor='lime';if(!kitPatterns[kitPattern])kitPattern='plain';
   if(!Array.isArray(owned))owned=['rookie'];if(!owned.includes('rookie'))owned.unshift('rookie');
   if(!owned.includes(selected))selected='rookie';
   let character=chars.find(c=>c.id===selected),state='menu',score=0,wave=1,lives=3,best=Number(read('zfi-best',0))||0;
@@ -34,6 +38,9 @@
     overlay.classList.remove('hidden');ui();
   }
   function avatarMarkup(c){
+    const [,shirt,accent]=kitColors[kitColor],clip='kit-'+c.id;
+    const shirtShape='M20 58L28 49H60L68 58L61 68L58 63V86H30V63L27 68Z';
+    const pattern=kitPattern==='stripes'?'<path d="M35 48V86M47 48V86M59 48V86" stroke="'+accent+'" stroke-width="7" opacity=".85"/>':kitPattern==='hoops'?'<path d="M18 60H70M18 75H70" stroke="'+accent+'" stroke-width="8" opacity=".85"/>':kitPattern==='halves'?'<path d="M44 48H70V87H44Z" fill="'+accent+'"/>':'';
     const backdrop=c.id==='keeper'?'<path d="M13 17H75V51M26 17V44M44 17V40M62 17V44" fill="none" stroke="#b9f8e1" stroke-width="2" opacity=".55"/>':'<path d="M9 46H79M44 12V46" stroke="#b7dfad" stroke-width="2" opacity=".35"/>';
     const detail={
       rookie:'<path d="M34 54V82M54 54V82" stroke="#f6ffe8" stroke-width="3" opacity=".8"/>',
@@ -44,17 +51,18 @@
     }[c.id];
     return '<svg class="player-avatar" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
       '<rect x="2" y="2" width="84" height="84" rx="13" fill="#226746" stroke="#b4df88" stroke-width="3"/>'+backdrop+
-      '<path d="M20 58L28 49H60L68 58L61 68L58 63V86H30V63L27 68Z" fill="'+c.color+'" stroke="#19382f" stroke-width="2"/>'+
+      '<defs><clipPath id="'+clip+'"><path d="'+shirtShape+'"/></clipPath></defs><path d="'+shirtShape+'" fill="'+shirt+'" stroke="#19382f" stroke-width="2"/><g clip-path="url(#'+clip+')">'+pattern+'</g>'+
       '<circle cx="44" cy="31" r="15" fill="#dfad83"/><path d="M29 30Q29 13 45 15Q58 15 59 28L54 24Q44 27 30 24Z" fill="#24352c"/>'+
       '<circle cx="38" cy="32" r="1.8" fill="#26342c"/><circle cx="50" cy="32" r="1.8" fill="#26342c"/>'+
       '<path d="M39 39Q44 42 49 39" fill="none" stroke="#925e50" stroke-width="1.7"/>'+
-      '<text x="44" y="75" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="900" fill="#23402f">'+c.number+'</text>'+detail+
+      '<text x="44" y="75" text-anchor="middle" font-family="Arial,sans-serif" font-size="17" font-weight="900" fill="'+(kitColor==='black'||kitColor==='red'||kitColor==='blue'?'#fffef0':'#23402f')+'" stroke="'+(kitColor==='black'||kitColor==='red'||kitColor==='blue'?'#17352b':'#fffde8')+'" stroke-width=".7" paint-order="stroke">'+c.number+'</text>'+detail+
       '<circle cx="69" cy="69" r="14" fill="#fffdf0" stroke="#21382d" stroke-width="2"/>'+
       '<path d="M69 61L75 65L73 72L65 72L63 65Z" fill="#21382d"/><path d="M69 55V61M81 66L75 65M78 80L73 72M59 80L65 72M56 66L63 65" stroke="#21382d" stroke-width="1.5"/>'+
       '</svg>';
   }
   function characterCards(){
-    return '<div class="section-label">CHOOSE YOUR PLAYER · PERMANENT COIN UNLOCKS</div><div class="card-grid">'+chars.map(c=>{
+    const select=(id,options,current)=>'<select id="'+id+'" aria-label="'+(id==='kitColor'?'Shirt colour':'Shirt design')+'">'+Object.entries(options).map(([value,label])=>'<option value="'+value+'"'+(current===value?' selected':'')+'>'+label+'</option>').join('')+'</select>';
+    return '<div class="kit-picker"><span>DESIGN YOUR FOOTBALL SHIRT</span><label>COLOUR '+select('kitColor',Object.fromEntries(Object.entries(kitColors).map(([id,v])=>[id,v[0]])),kitColor)+'</label><label>DESIGN '+select('kitPattern',kitPatterns,kitPattern)+'</label></div><div class="section-label">CHOOSE YOUR PLAYER · PERMANENT COIN UNLOCKS</div><div class="card-grid">'+chars.map(c=>{
       const unlocked=owned.includes(c.id),chosen=selected===c.id;
       return '<div class="character-card'+(chosen?' selected':'')+'">'+avatarMarkup(c)+'<strong>'+c.name+'</strong><span class="ball-name">'+c.ballName+'</span><small><b>'+c.ability+'</b><br>'+c.desc+'</small><button type="button" data-character="'+c.id+'"'+(chosen||!unlocked&&bank<c.cost?' disabled':'')+'>'+(chosen?'SELECTED':unlocked?'SELECT':'UNLOCK · '+c.cost+' 🪙')+'</button></div>';
     }).join('')+'</div><div class="bank-note">Your coins: '+bank+' 🪙 · Earn more when a game ends, based on completed waves.</div>';
@@ -228,8 +236,14 @@
   function striker(t){
     ctx.save();ctx.translate(player.x,player.y);let step=Math.sin(t*.012)*2;
     ctx.fillStyle='#153e37';ctx.fillRect(-16,16,11,25+step);ctx.fillRect(5,16,11,25-step);
-    ctx.fillStyle=character.color;ctx.fillRect(-21,-12,42,35);
-    ctx.fillStyle='#224233';ctx.font='bold 19px Arial';ctx.textAlign='center';ctx.fillText(String(character.number),0,14);
+    const [,shirt,accent]=kitColors[kitColor];
+    ctx.fillStyle=shirt;ctx.fillRect(-21,-12,42,35);
+    ctx.save();ctx.beginPath();ctx.rect(-21,-12,42,35);ctx.clip();ctx.fillStyle=accent;
+    if(kitPattern==='stripes')for(let x=-16;x<23;x+=12)ctx.fillRect(x,-12,6,35);
+    if(kitPattern==='hoops'){ctx.fillRect(-21,-3,42,7);ctx.fillRect(-21,13,42,7)}
+    if(kitPattern==='halves')ctx.fillRect(0,-12,21,35);
+    ctx.restore();
+    ctx.fillStyle=['black','red','blue'].includes(kitColor)?'#fffef0':'#224233';ctx.font='bold 19px Arial';ctx.textAlign='center';ctx.fillText(String(character.number),0,14);
     ctx.fillStyle='#264a38';ctx.fillRect(-21,14,42,8);
     ctx.fillStyle='#e4ae80';ctx.fillRect(-26,-5,8,23);ctx.fillRect(18,-5,8,23);
     if(character.id==='keeper'){ctx.fillStyle='#f5fbef';ctx.fillRect(-29,11,12,9);ctx.fillRect(17,11,12,9)}
@@ -252,6 +266,13 @@
   function loop(t){let dt=Math.min((t-last)/1000,.04);last=t;update(dt);render(t);raf=requestAnimationFrame(loop)}
   $('startButton').addEventListener('click',()=>{if(state==='paused')pause();else if(state==='shop')nextWave();else start()});
   $('overlayContent').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.character)choose(b.dataset.character);if(b.dataset.upgrade)buy(b.dataset.upgrade)});
+  $('overlayContent').addEventListener('change',e=>{
+    if(state!=='menu'&&state!=='over')return;
+    if(e.target.id==='kitColor'&&kitColors[e.target.value]){kitColor=e.target.value;save('zfi-kit-color',kitColor)}
+    else if(e.target.id==='kitPattern'&&kitPatterns[e.target.value]){kitPattern=e.target.value;save('zfi-kit-pattern',kitPattern)}
+    else return;
+    $('overlayContent').innerHTML=characterCards();render(performance.now());
+  });
   $('soundButton').addEventListener('click',()=>{sound=!sound;$('soundButton').innerHTML='♪ <span>'+(sound?'ON':'OFF')+'</span>';$('soundButton').setAttribute('aria-label','Turn sound '+(sound?'off':'on'));tone(550,.08)});
   window.addEventListener('keydown',e=>{
     if(['ArrowLeft','ArrowRight','Space','KeyA','KeyD','KeyP','KeyQ','KeyE'].includes(e.code))e.preventDefault();
