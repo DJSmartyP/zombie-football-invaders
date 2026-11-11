@@ -12,7 +12,7 @@ Open `index.html` in a browser, or play the [GitHub Pages version](https://djsma
 - Use a Charged Ball: **E** or its on-screen button. It hits hard and pierces three zombies.
 - Pause: **P**.
 
-The game has escalating zombie strength and a shop after every wave. Match cash buys stronger balls, faster kicks, split shots, Auto Fire, healing, and one-use items. Goal Shields automatically block one zombie at the goal. Five football players have their own numbered kits, ball effects, and special abilities; coins unlock them permanently. Pick a shirt colour and design from the player screen. The choice appears on the card and pitch sprite and is saved in the browser alongside coins and the best score. It uses plain HTML, CSS, and JavaScript; no build step is required.
+The game has escalating zombie strength and a shop after every wave. Match cash buys stronger balls, faster kicks, split shots, Auto Fire, healing, and one-use items. Goal Shields automatically block one zombie at the goal. Five football players have their own numbered kits, ball effects, abilities, and rarity colours: Easy red, Medium green, Hard blue, Insane yellow, and Grinder black. Tokens earned at game over unlock players permanently, including a small reward for a first-wave loss. Pick a name, shirt colour, and design from the player screen. The local leaderboard, kit choice, tokens, unlocks, and best score are saved in this browser. The pitch runs vertically within the landscape playfield. It uses plain HTML, CSS, and JavaScript; no build step is required.
 
 ## Credits
 

@@ -7,7 +7,7 @@
   <meta name="description" content="Stop the zombie invasion with perfectly placed footballs.">
   <title>Zombie Football Invaders</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="upgrades.css?v=4">
+  <link rel="stylesheet" href="upgrades.css?v=5">
 </head>
 <body>
   <main class="shell">
@@ -16,7 +16,7 @@
       <button id="soundButton" class="sound-button" type="button" aria-label="Turn sound on">♪ <span>OFF</span></button>
     </header>
     <section class="game-card" aria-label="Zombie Football Invaders game">
-      <div class="scoreboard" aria-live="polite"><div><span>SCORE</span><strong id="score">0000</strong></div><div><span>WAVE</span><strong id="wave">01</strong></div><div><span>MATCH CASH</span><strong id="cash">0</strong></div><div><span>COINS</span><strong id="coins">0</strong></div><div><span>BEST</span><strong id="best">0000</strong></div><div><span>LIVES</span><strong id="lives">♥ ♥ ♥</strong></div></div>
+      <div class="scoreboard" aria-live="polite"><div><span>SCORE</span><strong id="score">0000</strong></div><div><span>WAVE</span><strong id="wave">01</strong></div><div><span>MATCH CASH</span><strong id="cash">0</strong></div><div><span>TOKENS</span><strong id="coins">0</strong></div><div><span>BEST</span><strong id="best">0000</strong></div><div><span>LIVES</span><strong id="lives">♥ ♥ ♥</strong></div></div>
       <div class="arena-wrap">
         <canvas id="game" width="900" height="600" aria-label="Football pitch with advancing zombies"></canvas>
         <div id="overlay" class="overlay"><div class="overlay-panel"><span class="badge" id="overlayBadge">THE FINAL WHISTLE CAN WAIT</span><h2 id="overlayTitle">THE DEAD ARE<br><em>ON THE PITCH.</em></h2><p id="overlayText">Hold the line. Fire footballs at the zombies before they reach your goal.</p><div id="overlayContent"></div><button id="startButton" class="primary-button" type="button">KICK OFF <span>→</span></button><div class="mini-help" id="overlayHelp">MOVE ← → OR A / D <b>·</b> SPACE FIRES ONCE</div></div></div>
@@ -27,6 +27,6 @@
       <div class="credits">Original idea by <strong>Joshua</strong> · Playtesting by <strong>Jaylen</strong></div>
     </section>
   </main>
-  <script src="game.js?v=4"></script>
+  <script src="game.js?v=5"></script>
 </body>
 </html>

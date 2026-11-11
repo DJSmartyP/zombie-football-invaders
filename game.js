@@ -1,19 +1,22 @@
 (()=>{
   const canvas=document.getElementById('game'),ctx=canvas.getContext('2d'),$=id=>document.getElementById(id);
-  const W=900,H=600,player={x:450,y:538};
+  const W=900,H=600,FIELD_LEFT=175,FIELD_RIGHT=725,player={x:450,y:538};
   const keys={left:false,right:false,shoot:false};
   const chars=[
-    {id:'rookie',name:'Rookie',number:18,ballName:'Classic ball',cost:0,ability:'Quick Feet',desc:'Move 10% faster.',speed:1.1,hearts:3,damage:1,cash:1,pierce:1,color:'#d9f76b'},
-    {id:'keeper',name:'Keeper',number:1,ballName:'Shield ball',cost:35,ability:'Last Stand',desc:'Start with 4 lives.',speed:1,hearts:4,damage:1,cash:1,pierce:1,color:'#76dbd5'},
-    {id:'striker',name:'Striker',number:9,ballName:'Blaze ball',cost:90,ability:'Power Boot',desc:'Start with 2 damage.',speed:1,hearts:3,damage:2,cash:1,pierce:1,color:'#ffae72'},
-    {id:'captain',name:'Captain',number:10,ballName:'Star ball',cost:200,ability:'Rally Cry',desc:'2 damage, 4 lives and 20% more match cash.',speed:1,hearts:4,damage:2,cash:1.2,pierce:1,color:'#f6dc68'},
-    {id:'legend',name:'Legend',number:7,ballName:'Lightning ball',cost:400,ability:'Golden Ball',desc:'3 damage, 4 lives and balls pierce two zombies.',speed:1.05,hearts:4,damage:3,cash:1,pierce:2,color:'#f08add'}
+    {id:'rookie',name:'Rookie',rarity:'easy',number:18,ballName:'Classic ball',cost:0,ability:'Quick Feet',desc:'Move 10% faster.',speed:1.1,hearts:3,damage:1,cash:1,pierce:1,color:'#d9f76b'},
+    {id:'keeper',name:'Keeper',rarity:'medium',number:1,ballName:'Shield ball',cost:35,ability:'Last Stand',desc:'Start with 4 lives.',speed:1,hearts:4,damage:1,cash:1,pierce:1,color:'#76dbd5'},
+    {id:'striker',name:'Striker',rarity:'hard',number:9,ballName:'Blaze ball',cost:90,ability:'Power Boot',desc:'Start with 2 damage.',speed:1,hearts:3,damage:2,cash:1,pierce:1,color:'#ffae72'},
+    {id:'captain',name:'Captain',rarity:'insane',number:10,ballName:'Star ball',cost:200,ability:'Rally Cry',desc:'2 damage, 4 lives and 20% more match cash.',speed:1,hearts:4,damage:2,cash:1.2,pierce:1,color:'#f6dc68'},
+    {id:'legend',name:'Legend',rarity:'grinder',number:7,ballName:'Lightning ball',cost:400,ability:'Golden Ball',desc:'3 damage, 4 lives and balls pierce two zombies.',speed:1.05,hearts:4,damage:3,cash:1,pierce:2,color:'#f08add'}
   ];
   const kitColors={lime:['Lime','#d9f76b','#173d32'],red:['Red','#e9454e','#fff5df'],blue:['Blue','#3487df','#f6fbff'],sky:['Sky blue','#65cbe5','#173d43'],yellow:['Yellow','#ffd64f','#2f341e'],green:['Green','#25a56c','#f5fff1'],white:['White','#f5f3e8','#243b35'],black:['Black','#27343b','#e9f5ed']};
   const kitPatterns={plain:'Plain',stripes:'Vertical stripes',hoops:'Hoops',halves:'Half and half'};
   const read=(key,fallback)=>{try{return JSON.parse(localStorage.getItem(key))??fallback}catch{return fallback}};
   const save=(key,value)=>{try{localStorage.setItem(key,JSON.stringify(value))}catch{}};
+  const escapeHtml=s=>String(s).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
   let bank=Number(read('zfi-coins',0))||0,owned=read('zfi-owned',['rookie']),selected=read('zfi-character','rookie');
+  let playerName=String(read('zfi-player-name','Player')).trim().slice(0,16)||'Player';
+  let leaderboard=read('zfi-leaderboard',[]);if(!Array.isArray(leaderboard))leaderboard=[];
   let kitColor=read('zfi-kit-color','lime'),kitPattern=read('zfi-kit-pattern','plain');
   if(!kitColors[kitColor])kitColor='lime';if(!kitPatterns[kitPattern])kitPattern='plain';
   if(!Array.isArray(owned))owned=['rookie'];if(!owned.includes('rookie'))owned.unshift('rookie');
@@ -62,14 +65,15 @@
   }
   function characterCards(){
     const select=(id,options,current)=>'<select id="'+id+'" aria-label="'+(id==='kitColor'?'Shirt colour':'Shirt design')+'">'+Object.entries(options).map(([value,label])=>'<option value="'+value+'"'+(current===value?' selected':'')+'>'+label+'</option>').join('')+'</select>';
-    return '<div class="kit-picker"><span>DESIGN YOUR FOOTBALL SHIRT</span><label>COLOUR '+select('kitColor',Object.fromEntries(Object.entries(kitColors).map(([id,v])=>[id,v[0]])),kitColor)+'</label><label>DESIGN '+select('kitPattern',kitPatterns,kitPattern)+'</label></div><div class="section-label">CHOOSE YOUR PLAYER · PERMANENT COIN UNLOCKS</div><div class="card-grid">'+chars.map(c=>{
+    const board=leaderboard.length?leaderboard.slice(0,5).map((row,i)=>'<span>'+(i+1)+'. '+escapeHtml(row.name)+' · W'+Number(row.waves||0)+' · '+Number(row.score||0)+'</span>').join(''):'<span>No scores yet. Play a match!</span>';
+    return '<div class="player-setup"><label>PLAYER NAME <input id="playerName" type="text" maxlength="16" autocomplete="nickname" value="'+escapeHtml(playerName)+'"></label><div class="local-board"><b>LOCAL LEADERBOARD</b>'+board+'</div></div><div class="kit-picker"><span>DESIGN YOUR FOOTBALL SHIRT</span><label>COLOUR '+select('kitColor',Object.fromEntries(Object.entries(kitColors).map(([id,v])=>[id,v[0]])),kitColor)+'</label><label>DESIGN '+select('kitPattern',kitPatterns,kitPattern)+'</label></div><div class="section-label">CHOOSE YOUR PLAYER · PERMANENT TOKEN UNLOCKS</div><div class="card-grid">'+chars.map(c=>{
       const unlocked=owned.includes(c.id),chosen=selected===c.id;
-      return '<div class="character-card'+(chosen?' selected':'')+'">'+avatarMarkup(c)+'<strong>'+c.name+'</strong><span class="ball-name">'+c.ballName+'</span><small><b>'+c.ability+'</b><br>'+c.desc+'</small><button type="button" data-character="'+c.id+'"'+(chosen||!unlocked&&bank<c.cost?' disabled':'')+'>'+(chosen?'SELECTED':unlocked?'SELECT':'UNLOCK · '+c.cost+' 🪙')+'</button></div>';
-    }).join('')+'</div><div class="bank-note">Your coins: '+bank+' 🪙 · Earn more when a game ends, based on completed waves.</div>';
+      return '<div class="character-card rarity-'+c.rarity+(chosen?' selected':'')+'">'+avatarMarkup(c)+'<span class="rarity-label">'+c.rarity.toUpperCase()+'</span><strong>'+c.name+'</strong><span class="ball-name">'+c.ballName+'</span><small><b>'+c.ability+'</b><br>'+c.desc+'</small><button type="button" data-character="'+c.id+'"'+(chosen||!unlocked&&bank<c.cost?' disabled':'')+'>'+(chosen?'SELECTED':unlocked?'SELECT':'UNLOCK · '+c.cost+' TOKENS')+'</button></div>';
+    }).join('')+'</div><div class="bank-note">Your tokens: '+bank+' · Earn tokens after each game. Unlocks and scores stay on this browser.</div>';
   }
   function menu(){show('menu','THE FINAL WHISTLE CAN WAIT','THE DEAD ARE<br><em>ON THE PITCH.</em>','Defend your goal, earn match cash, and visit the upgrade shop after every wave.',characterCards(),'KICK OFF','MOVE ← → OR A / D <b>·</b> SPACE FIRES ONCE');}
   function gameOver(earned,cleared){
-    show('over','FULL TIME · GAME OVER','THE GOAL<br><em>HAS FALLEN.</em>','You survived '+cleared+' '+(cleared===1?'wave':'waves')+'. You earned '+earned+' coins. Best score: '+best+'. Choose a player and try again.',characterCards(),'PLAY AGAIN','COINS = 8 × WAVES CLEARED + 3 × WAVES CLEARED²');
+    show('over','FULL TIME · GAME OVER','THE GOAL<br><em>HAS FALLEN.</em>',playerName+': you survived '+cleared+' '+(cleared===1?'wave':'waves')+'. You earned '+earned+' tokens. Best score: '+best+'. Choose a player and try again.',characterCards(),'PLAY AGAIN','TOKENS = 5 + 8 × WAVES CLEARED + 3 × WAVES CLEARED²');
     tone(170,.5,'sawtooth');
   }
   function upgradeCost(id){
@@ -105,19 +109,21 @@
       offer('freeze','❄️','Freeze Whistle','Press Q to stop zombies for 4 seconds. Held: '+freezeCharges+'.')+
       offer('power','☄️','Charged Ball','Press E for one heavy piercing shot. Held: '+powerCharges+'.')+
       offer('shield','🛡️','Goal Shield','Automatically blocks one zombie at your goal. Held: '+shieldCharges+'.')+
-      '</div><div class="bank-note">Match cash comes from kills and resets each game. Coins unlock characters permanently.</div>';
+      '</div><div class="bank-note">Match cash comes from kills and resets each game. Tokens unlock characters permanently.</div>';
     show('shop','WAVE CLEARED','HALF TIME.<br><em>HIT THE SHOP.</em>','Wave '+wave+' complete. Spend match cash before the next wave.',cards,'NEXT WAVE','RUN UPGRADES LAST THIS GAME · MATCH ITEMS ARE CONSUMED');
     tone(640,.25,'triangle');
   }
   function waveStart(){remaining=7+wave*3;spawnTimer=.45;freezeTimer=0;ui()}
   function start(){
+    const nameInput=$('playerName');if(nameInput){playerName=nameInput.value.trim().slice(0,16)||'Player';save('zfi-player-name',playerName)}
     character=chars.find(c=>c.id===selected)||chars[0];score=0;wave=1;lives=character.hearts;cash=0;damageLevel=0;speedLevel=0;autoFire=false;splitShot=false;
     freezeCharges=0;powerCharges=0;shieldCharges=0;freezeTimer=0;healsThisShop=0;
     zombies=[];balls=[];particles=[];player.x=W/2;cooldown=0;keys.left=keys.right=keys.shoot=false;
     state='playing';overlay.classList.add('hidden');waveStart();tone(520,.25);
     if(!raf){last=performance.now();raf=requestAnimationFrame(loop)}
   }
-  function end(){if(state==='over')return;let cleared=wave-1,earned=8*cleared+3*cleared*cleared;lastReward=earned;bank+=earned;save('zfi-coins',bank);ui();gameOver(earned,cleared)}
+  function end(){if(state==='over')return;let cleared=wave-1,earned=5+8*cleared+3*cleared*cleared;lastReward=earned;bank+=earned;save('zfi-coins',bank);
+    leaderboard.push({name:playerName,waves:cleared,score});leaderboard.sort((a,b)=>b.waves-a.waves||b.score-a.score);leaderboard=leaderboard.slice(0,5);save('zfi-leaderboard',leaderboard);ui();gameOver(earned,cleared)}
   function pause(){
     if(state==='playing')show('paused','PAUSED','HALF TIME.<br><em>TAKE A BREATH.</em>','The zombies will wait. For now.','','RESUME');
     else if(state==='paused'){state='playing';overlay.classList.add('hidden');ui()}
@@ -148,7 +154,7 @@
   }
   function spawn(){
     let hp=1+Math.floor((wave-1)/2)+(wave>=4&&Math.random()<.28?1:0);
-    zombies.push({id:++zombieId,x:65+Math.random()*(W-130),y:-38,r:21,hp,maxHp:hp,speed:42+wave*10+Math.random()*18,phase:Math.random()*6.28,flash:0});
+    zombies.push({id:++zombieId,x:FIELD_LEFT+50+Math.random()*(FIELD_RIGHT-FIELD_LEFT-100),y:-38,r:21,hp,maxHp:hp,speed:42+wave*10+Math.random()*18,phase:Math.random()*6.28,flash:0});
     remaining--;
   }
   function fire(mode='normal'){
@@ -169,7 +175,7 @@
     if(state!=='playing')return;cooldown=Math.max(0,cooldown-dt);
     if(freezeTimer>0){freezeTimer=Math.max(0,freezeTimer-dt);if(freezeTimer===0)ui()}
     if(keys.left)player.x-=370*character.speed*dt;if(keys.right)player.x+=370*character.speed*dt;
-    player.x=Math.max(40,Math.min(W-40,player.x));if(keys.shoot&&autoFire)fire();
+    player.x=Math.max(FIELD_LEFT+30,Math.min(FIELD_RIGHT-30,player.x));if(keys.shoot&&autoFire)fire();
     spawnTimer-=dt;if(remaining>0&&spawnTimer<=0){spawn();spawnTimer=Math.max(.28,.95-wave*.055)}
     for(const b of balls){b.y+=b.vy*dt;b.x+=b.vx*dt}balls=balls.filter(b=>b.y>-20&&b.x>-20&&b.x<W+20);
     for(const z of zombies){
@@ -192,15 +198,17 @@
     if(remaining===0&&zombies.length===0&&state==='playing'){healsThisShop=0;shop()}
   }
   function pitch(){
-    ctx.fillStyle='#267245';ctx.fillRect(0,0,W,H);
-    for(let i=0;i<10;i++){ctx.fillStyle=i%2?'#2b7949':'#287346';ctx.fillRect(i*90,0,90,H)}
-    ctx.strokeStyle='rgba(228,255,219,.5)';ctx.lineWidth=3;ctx.strokeRect(20,18,W-40,H-36);
-    ctx.beginPath();ctx.moveTo(20,H/2);ctx.lineTo(W-20,H/2);ctx.arc(W/2,H/2,78,0,Math.PI*2);ctx.stroke();
-    ctx.strokeRect(W/2-145,18,290,90);ctx.strokeRect(W/2-65,18,130,35);
-    ctx.strokeRect(W/2-170,H-124,340,106);ctx.strokeRect(W/2-75,H-60,150,42);
-    ctx.fillStyle='#eafad7';ctx.beginPath();ctx.arc(W/2,180,4,0,7);ctx.fill();
-    ctx.fillStyle='#142c2a';ctx.fillRect(W/2-200,H-12,400,12);
-    ctx.fillStyle='#e9f9cb';ctx.fillRect(W/2-155,H-14,310,5);
+    ctx.fillStyle='#18392f';ctx.fillRect(0,0,W,H);
+    for(let x=0;x<W;x+=25){ctx.fillStyle=x%50?'#214b38':'#1c4233';ctx.fillRect(x,0,12,H)}
+    ctx.fillStyle='#267245';ctx.fillRect(FIELD_LEFT,0,FIELD_RIGHT-FIELD_LEFT,H);
+    for(let y=0;y<H;y+=75){ctx.fillStyle=y%150?'#2b7949':'#287346';ctx.fillRect(FIELD_LEFT,y,FIELD_RIGHT-FIELD_LEFT,75)}
+    ctx.strokeStyle='rgba(228,255,219,.72)';ctx.lineWidth=3;ctx.strokeRect(FIELD_LEFT+12,15,FIELD_RIGHT-FIELD_LEFT-24,H-30);
+    ctx.beginPath();ctx.moveTo(FIELD_LEFT+12,H/2);ctx.lineTo(FIELD_RIGHT-12,H/2);ctx.arc(W/2,H/2,67,0,Math.PI*2);ctx.stroke();
+    ctx.strokeRect(W/2-135,15,270,92);ctx.strokeRect(W/2-60,15,120,37);
+    ctx.strokeRect(W/2-135,H-107,270,92);ctx.strokeRect(W/2-60,H-52,120,37);
+    ctx.fillStyle='#eafad7';ctx.beginPath();ctx.arc(W/2,150,4,0,7);ctx.fill();ctx.beginPath();ctx.arc(W/2,H-150,4,0,7);ctx.fill();
+    ctx.fillStyle='#142c2a';ctx.fillRect(W/2-130,H-12,260,12);
+    ctx.fillStyle='#e9f9cb';ctx.fillRect(W/2-105,H-14,210,5);
   }
   function zombie(z,t){
     ctx.save();ctx.translate(z.x,z.y);let gait=Math.sin(t*.008+z.phase)*3;
@@ -266,6 +274,7 @@
   function loop(t){let dt=Math.min((t-last)/1000,.04);last=t;update(dt);render(t);raf=requestAnimationFrame(loop)}
   $('startButton').addEventListener('click',()=>{if(state==='paused')pause();else if(state==='shop')nextWave();else start()});
   $('overlayContent').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.character)choose(b.dataset.character);if(b.dataset.upgrade)buy(b.dataset.upgrade)});
+  $('overlayContent').addEventListener('input',e=>{if(e.target.id==='playerName'){playerName=e.target.value.trim().slice(0,16)||'Player';save('zfi-player-name',playerName)}});
   $('overlayContent').addEventListener('change',e=>{
     if(state!=='menu'&&state!=='over')return;
     if(e.target.id==='kitColor'&&kitColors[e.target.value]){kitColor=e.target.value;save('zfi-kit-color',kitColor)}
@@ -286,8 +295,8 @@
   });
   window.addEventListener('keyup',e=>{if(e.code==='ArrowLeft'||e.code==='KeyA')keys.left=false;if(e.code==='ArrowRight'||e.code==='KeyD')keys.right=false;if(e.code==='Space')keys.shoot=false});
   window.addEventListener('blur',()=>{keys.left=keys.right=keys.shoot=false;if(state==='playing')pause()});
-  canvas.addEventListener('pointermove',e=>{if(state==='playing'&&e.pointerType!=='touch'){let r=canvas.getBoundingClientRect();player.x=Math.max(40,Math.min(W-40,(e.clientX-r.left)*W/r.width))}});
-  canvas.addEventListener('pointerdown',e=>{if(state==='playing'){let r=canvas.getBoundingClientRect();player.x=Math.max(40,Math.min(W-40,(e.clientX-r.left)*W/r.width));fire()}});
+  canvas.addEventListener('pointermove',e=>{if(state==='playing'&&e.pointerType!=='touch'){let r=canvas.getBoundingClientRect();player.x=Math.max(FIELD_LEFT+30,Math.min(FIELD_RIGHT-30,(e.clientX-r.left)*W/r.width))}});
+  canvas.addEventListener('pointerdown',e=>{if(state==='playing'){let r=canvas.getBoundingClientRect();player.x=Math.max(FIELD_LEFT+30,Math.min(FIELD_RIGHT-30,(e.clientX-r.left)*W/r.width));fire()}});
   $('freezeButton').addEventListener('click',activateFreeze);
   $('powerButton').addEventListener('click',()=>fire('power'));
   for(const [id,key] of [['leftButton','left'],['rightButton','right'],['shootButton','shoot']]){
